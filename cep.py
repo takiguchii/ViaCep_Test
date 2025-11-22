@@ -1,52 +1,25 @@
-from dataclasses import dataclass, field
-from typing import Dict
-from abc import ABC, abstractmethod
-import re
+from dataclasses import dataclass
 
-
-
-CEP_PATTERN = re.compile(r'^\d{5}\-?\d{3}$')
-
-@dataclass
+"""
+Dataclasse = ele incurta a criação das classes definindo apenas os atributoos que são os mais importantes
+Frozen = deixa o arquivo imutável
+"""
+@dataclass(frozen=True)
 class Cep:
     value: str
 
-    @classmethod    
-    def from_str(cls, cep_str: str): 
-        match = CEP_PATTERN.match(cep_str)
-        if not match:
-            raise Exception()
-        clean_cep = cep_str.replace('-', '')
-        return cls(clean_cep)
-    
     def formatted(self) -> str:
+        """Retorna o CEP formatado como 'XXXXX-XXX'."""
+        # Exemplo: '17500000' -> '17500-000'
         return self.value[:5] + '-' + self.value[5:]
-    
+
+
+# 2. Classe de Dados Simples para o Endereço
+# Representa a resposta padronizada da API, com todos os campos essenciais.
+
 @dataclass
 class Address:
-    city: str = None
-    neighborhood: str = None
-    street: str = None
-    state: str = None
-    
-class CepService(ABC):
-    
-    @abstractmethod
-    async def get_address_by_cep(self, cep: Cep) -> Address:
-        raise NotImplementedError()
-                
-# decorator
-@dataclass      
-class CachedCepService(CepService):
-    
-    cep_service: CepService
-    cache: Dict[str, Address] = field(default_factory=dict)
-    
-    async def get_address_by_cep(self, cep: Cep) -> Address:
-        if cep.value in self.cache:
-            print("from cache")
-            return self.cache[cep.value]
-        address = await self.cep_service.get_address_by_cep(cep)
-        self.cache[cep.value] = address
-        print("from service")
-        return address
+    city: str
+    neighborhood: str
+    street: str
+    state: str
