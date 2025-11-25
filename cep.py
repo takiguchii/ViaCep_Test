@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+from typing import Awaitable
 from dataclasses import dataclass
 
 """
@@ -9,13 +11,7 @@ class Cep:
     value: str
 
     def formatted(self) -> str:
-        """Retorna o CEP formatado como 'XXXXX-XXX'."""
-        # Exemplo: '17500000' -> '17500-000'
-        return self.value[:5] + '-' + self.value[5:]
-
-
-# 2. Classe de Dados Simples para o Endereço
-# Representa a resposta padronizada da API, com todos os campos essenciais.
+        return self.value[:5] + '-' + self.value[5:]; "Retornando o valor formatado do cep"
 
 @dataclass
 class Address:
@@ -23,3 +19,9 @@ class Address:
     neighborhood: str
     street: str
     state: str
+    
+"@abstractmethod definindo que é uma classe abstrata"
+class CepService(ABC):
+    @abstractmethod 
+    async def get_address_by_cep(self, cep: Cep) -> Awaitable[Address]:
+        raise NotImplementedError()
