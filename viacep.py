@@ -1,15 +1,20 @@
 import aiohttp
-from cep import Cep, Address, CepService
+from cep import Cep, Address, CepService, CepValidationError 
+
 
 class ViaCepService(CepService):
     
-
     async def get_address_by_cep(self, cep: Cep) -> Address:
         async with aiohttp.ClientSession() as session:
-            async with session.get(f'https://viacep.com.br/ws/{cep.value}/json/') as response:
+            url = f'https://viacep.com.br/ws/{cep.value}/json/'
+            
+            async with session.get(url) as response:
                 cep_payload = await response.json()
-                
-        return Address(
+        
+        if 'erro' in cep_payload and cep_payload['erro']: # testando se o CEP não foi encontrado
+            raise CepValidationError(f"CEP '{cep.formatted()}' não encontrado ou inexistente na API ViaCep.")
+
+        return Address( # convertendo os dados para um json 
             street=cep_payload['logradouro'],
             city=cep_payload['localidade'],
             neighborhood=cep_payload['bairro'],
