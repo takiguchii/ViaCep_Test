@@ -19,15 +19,15 @@ class CepResourceTest(WebAppTestCase):
 
     def test_get_cep(self):
         expected = {
-            "city": "Marília",
-            "neighborhood": "Marília",
-            "street": "Avenida Carlos Gomes",
+            "city": "Quintana",
+            "neighborhood": "Centro",
+            "street": "Rua Principal",
             "state": "SP"
         }
         address = Address(**expected)
 
         with patch.object(ViaCepService, 'get_address_by_cep', return_value=address) as mock_method:
-            response = self.simulate_get('/cep/17501000')
+            response = self.simulate_get('/cep/17672050')
             mock_method.assert_called_once()
 
         self.assertEqual(response.status_code, 200)

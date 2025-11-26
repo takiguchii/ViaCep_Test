@@ -3,8 +3,6 @@ from typing import Dict
 from abc import ABC, abstractmethod
 import re
 
-
-
 CEP_PATTERN = re.compile(r'^\d{5}\-?\d{3}$')
 
 @dataclass

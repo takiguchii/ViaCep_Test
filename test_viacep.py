@@ -6,14 +6,14 @@ from aiounittest import AsyncTestCase
 
 class ViaCepServiceTest(AsyncTestCase):
     
-    async def test_17519460(self):
+    async def test_17672050(self):
         service = ViaCepService()
-        cep = Cep.from_str('17519460')
+        cep = Cep.from_str('17672050')
         address = await service.get_address_by_cep(cep)
         self.assertIsInstance(address, Address)
-        self.assertEqual(address.street, 'Rua João Tudella')
-        self.assertEqual(address.city, 'Marília')
-        self.assertEqual(address.neighborhood, 'Jardim Parati')
+        self.assertEqual(address.street, 'Rua Principal')
+        self.assertEqual(address.city, 'Quintana')
+        self.assertEqual(address.neighborhood, 'Centro')
         self.assertEqual(address.state, 'SP')
     
     async def test_17501000(self):
@@ -31,23 +31,22 @@ class ViaCepTest(AsyncTestCase):
     
     async def test_via_cep_api(self):
         expected_payload = {
-            "cep": "17519-460",
-            "logradouro": "Rua João Tudella",
+            "cep": "17672-050",
+            "logradouro": "Rua Principal",
             "complemento": "",
             "unidade": "",
-            "bairro": "Jardim Parati",
-            "localidade": "Marília",
+            "bairro": "Centro",
+            "localidade": "Quintana",
             "uf": "SP",
             "estado": "São Paulo",
             "regiao": "Sudeste",
-            "ibge": "3529005",
-            "gia": "4388",
+            "ibge": "3541204",
+            "gia": "",
             "ddd": "14",
-            "siafi": "6681"
+            "siafi": "6685"
         }
 
         async with aiohttp.ClientSession() as session:
-            async with session.get('https://viacep.com.br/ws/17519460/json/') as response:
+            async with session.get('https://viacep.com.br/ws/17672050/json/') as response:
                 cep_payload = await response.json()
                 self.assertDictEqual(expected_payload, cep_payload)
-        
